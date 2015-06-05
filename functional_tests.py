@@ -17,7 +17,7 @@ class NewVisitorTest(unittest.TestCase):
 #put in a title and header mentioning to do lists
 		self.assertIn( 'To-Do', self.browser.title)
 		header_text = self.browser.find_element_by_tag_name('h1').text
-		self.assertIn('To-Do, header_text')
+		self.assertIn('To-Do', header_text)
 		
 		
 
@@ -38,7 +38,8 @@ class NewVisitorTest(unittest.TestCase):
 		table = self.browser.find_element_by_id('id_list_table')
 		rows = table.find_elements_by_tag_name('tr')
 		self.assertTrue(
-			any(row.text == '1: Buy peacock feathers' for row in rows))
+			any(row.text == '1: Buy peacock feathers' for row in rows),
+			"New to-do item did not appear in table")
 #still a text box for another entry
 		self.fail('Finish the test')
 #do another entry
