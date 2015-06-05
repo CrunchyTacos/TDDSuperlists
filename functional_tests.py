@@ -29,7 +29,7 @@ class NewVisitorTest(unittest.TestCase):
 			
 		
 #enter an item
-		inputbox.send_keys('Buy peacock feather')
+		inputbox.send_keys('Buy peacock feathers')
 		
 		
 #when enter is pushed, page updates showing the list
@@ -37,13 +37,17 @@ class NewVisitorTest(unittest.TestCase):
 		
 		table = self.browser.find_element_by_id('id_list_table')
 		rows = table.find_elements_by_tag_name('tr')
-		self.assertTrue(
-			any(row.text == '1: Buy peacock feathers' for row in rows),
-			"New to-do item did not appear in table")
-#still a text box for another entry
-		self.fail('Finish the test')
-#do another entry
+		self.assertIn('1: Buy peacock feathers', [row.text for row in rows])
+#still a text box for another entry, do another entry
+		inputbox = self.browser.find_element_by_id('id_new_item')
+		inputbox.send_keys('Use peacock feathers to make a fly')
+		inputbox.send_keys(Keys.ENTER)
 #page updates after enter
+		table = self.browser.find_element_by_id('id_list_table')
+		rows = table.find_elements_by_tag_name('tr')
+		self.assertIn('1: Buy peacock feathers', [row.text for row in rows])
+		self.assertIn('2: Use peacock feathers to make a fly', [row.text for row in rows])
+		self.fail('Finish the test')
 #site generates a unique url to save list, explains that
 #url still has the list
 if __name__ == '__main__':
