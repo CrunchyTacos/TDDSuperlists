@@ -1,8 +1,9 @@
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 import unittest
+from django.test import LiveServerTestCase
 
-class NewVisitorTest(unittest.TestCase):
+class NewVisitorTest(LiveServerTestCase):
 	def setUp(self):
 		self.browser = webdriver.Firefox()
 		self.browser.implicitly_wait(3)
@@ -18,7 +19,7 @@ class NewVisitorTest(unittest.TestCase):
 	def test_can_start_a_list_and_retrieve_it_later(self):
 		
 #go to the homepage
-		self.browser.get('http://localhost:8000')
+		self.browser.get(self.live_server_url)
 #put in a title and header mentioning to do lists
 		self.assertIn( 'To-Do', self.browser.title)
 		header_text = self.browser.find_element_by_tag_name('h1').text
@@ -39,7 +40,8 @@ class NewVisitorTest(unittest.TestCase):
 		
 #when enter is pushed, page updates showing the list
 		inputbox.send_keys(Keys.ENTER)
-		
+		edith_list_url = self.browser.current_url
+		self.assertRegex(edith_list_url, '/lists/.+')
 		self.check_for_row_in_list_table('1: Buy peacock feathers')
 #still a text box for another entry, do another entry
 		inputbox = self.browser.find_element_by_id('id_new_item')
@@ -49,9 +51,33 @@ class NewVisitorTest(unittest.TestCase):
 		self.check_for_row_in_list_table('1: Buy peacock feathers')
 		self.check_for_row_in_list_table('2: Use peacock feathers to make a fly')
 		
+#new user comes in
+## new browser session to make sure no information of prior user is coming through from cookies etc
+		self.browser.quit()
+		self.browser = webdriver.Firefox()
 		
+#2 goes to homepage, so sign of 1's list
+		self.browser.get(self.live_server_url)
+		page_text = self.browser.find_element_by_tag_name('body').text
+		self.assertNotIn('Buy peacock feathers', page_text)
+		self.assertNotIn('make a fly', page_text)
+#2 starts a new list
+		inputbox = self.browser.find_element_by_id('id_new_item')
+		inputbox.send_keys('Buy milk')
+		inputbox.send_keys(Keys.Enter)
+
+#2 get unique url
+		francis_list_url = self.browser.current_url
+		self.assertRegex(francis_list_url, '/lists/.+')
+		self.assertNotEqual(francis_list_url, edith_list_url)
+
+#still not trace of 1's list
+		page_text = self.browser.find_element_by_tag_name('body').text
+		self.assertNotIn('Buy peacock feathers', page_text)
+		self.assertIn('Buy milk', page_text)
+	
+	
 		self.fail('Finish the test')
 #site generates a unique url to save list, explains that
 #url still has the list
-if __name__ == '__main__':
-	unittest.main(warnings='ignore')
+
