@@ -43,10 +43,12 @@ class NewVisitorTest(LiveServerTestCase):
 		edith_list_url = self.browser.current_url
 		self.assertRegex(edith_list_url, '/lists/.+')
 		self.check_for_row_in_list_table('1: Buy peacock feathers')
+		
 #still a text box for another entry, do another entry
 		inputbox = self.browser.find_element_by_id('id_new_item')
 		inputbox.send_keys('Use peacock feathers to make a fly')
 		inputbox.send_keys(Keys.ENTER)
+		
 #page updates after enter
 		self.check_for_row_in_list_table('1: Buy peacock feathers')
 		self.check_for_row_in_list_table('2: Use peacock feathers to make a fly')
@@ -64,7 +66,7 @@ class NewVisitorTest(LiveServerTestCase):
 #2 starts a new list
 		inputbox = self.browser.find_element_by_id('id_new_item')
 		inputbox.send_keys('Buy milk')
-		inputbox.send_keys(Keys.Enter)
+		inputbox.send_keys(Keys.ENTER)
 
 #2 get unique url
 		francis_list_url = self.browser.current_url
