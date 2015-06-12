@@ -79,7 +79,6 @@ class NewVisitorTest(LiveServerTestCase):
 		self.assertIn('Buy milk', page_text)
 	
 	
-		self.fail('Finish the test')
 #site generates a unique url to save list, explains that
 #url still has the list
 
