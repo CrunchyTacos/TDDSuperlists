@@ -2,7 +2,7 @@ from django.conf.urls import include, url
 from django.contrib import admin
 from lists import views as list_views
 from lists import urls as list_urls
-
+#comment so git will fuckin push
 urlpatterns = [
     # Examples:
     url(r'^$', list_views.home_page, name='home'),
